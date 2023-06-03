@@ -64,4 +64,35 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    //  Sys UI Controller - Navigation Animation
+    def accompanistVersion = "0.31.2-alpha"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanistVersion"
+
+    //  Logging Interceptor
+    implementation "com.squareup.okhttp3:logging-interceptor:4.11.0"
+
+    //  Icons
+    implementation "androidx.compose.material:material-icons-extended"
+
+    //  Koin
+    implementation "io.insert-koin:koin-android:3.4.1"
+
+    //  Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+
+    //  ViewModel - Lifecycle
+    def lifecycleVersion = "2.6.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
+
+    // Coil
+    implementation "io.coil-kt:coil:2.4.0"
 }
