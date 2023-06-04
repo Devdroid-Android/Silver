@@ -69,6 +69,7 @@ dependencies {
     def accompanistVersion = "0.31.2-alpha"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanistVersion"
+    implementation "com.google.accompanist:accompanist-flowlayout:$accompanistVersion"
 
     //  Logging Interceptor
     implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6"

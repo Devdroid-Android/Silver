@@ -1,10 +1,16 @@
 package com.satyamthakur.silver.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,14 +21,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,21 +35,25 @@ import coil.compose.AsyncImage
 import com.satyamthakur.silver.R
 import com.satyamthakur.silver.domain.model.Movie
 import com.satyamthakur.silver.domain.model.PopularMovies
+import com.satyamthakur.silver.ui.theme.CategoryBackground
+import com.satyamthakur.silver.ui.theme.CategoryTextColor
 import com.satyamthakur.silver.ui.theme.SilverTheme
 import com.satyamthakur.silver.ui.theme.StarColor
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun HorizontalMovieItem(
+fun VerticalMovieItem(
     movie: Movie,
-    onCLicked: (Movie) -> Unit
+    onMovieClicked: (Movie) -> Unit
 ) {
     Surface(
         modifier = Modifier
             .clip(RoundedCornerShape(4.dp))
-            .clickable { onCLicked.invoke(movie) }
+            .clickable { onMovieClicked(movie) }
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
             AsyncImage(
                 model = stringResource(
@@ -59,22 +67,21 @@ fun HorizontalMovieItem(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center,
                 modifier = Modifier
-                    .width(150.dp)
+                    .width(100.dp)
                     .aspectRatio(3 / 5F)
                     .clip(RoundedCornerShape(4.dp))
             )
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = movie.title,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    text = movie.title, style = MaterialTheme.typography.titleMedium.copy(
                         fontSize = 14.sp,
-                        lineHeight = 16.sp
+                        fontWeight = FontWeight.Bold,
                     ),
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    modifier = Modifier.width(150.dp)
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -89,7 +96,7 @@ fun HorizontalMovieItem(
                     Text(
                         text = stringResource(
                             id = R.string.vote_average_template,
-                            movie.voteAverage
+                            movie.voteAverage.toString()
                         ),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = MaterialTheme.colorScheme.onSurface.copy(
@@ -99,6 +106,32 @@ fun HorizontalMovieItem(
                         )
                     )
                 }
+                FlowRow(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    maxItemsInEachRow = 3,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    movie.genreId.forEach { genreID ->
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(100.dp))
+                                .background(CategoryBackground)
+                        ) {
+                            Text(
+                                text = genreID.toString(),
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontSize = 6.sp,
+                                    color = CategoryTextColor
+                                ),
+                                modifier = Modifier.padding(
+                                    horizontal = 12.dp,
+                                    vertical = 4.dp
+                                )
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -106,14 +139,13 @@ fun HorizontalMovieItem(
 
 @Preview
 @Composable
-fun PreviewHorizontalMovieItem() {
-    val movie by remember {
-        mutableStateOf(PopularMovies[0])
-    }
+fun PreviewVerticalMovieItem() {
     SilverTheme {
-        HorizontalMovieItem(
-            movie = movie,
-            onCLicked = {}
-        )
+        Surface {
+            VerticalMovieItem(
+                movie = PopularMovies[0],
+                onMovieClicked = {}
+            )
+        }
     }
 }

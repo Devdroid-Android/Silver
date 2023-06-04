@@ -2,6 +2,7 @@ package com.satyamthakur.silver.domain.model
 
 data class Movie(
     val adult: Boolean,
+    val genreId: List<Int>,
     val id: Int,
     val originalLanguage: String,
     val originalTitle: String,
@@ -18,6 +19,9 @@ data class Movie(
 val PopularMovies: List<Movie> = listOf(
     Movie(
         adult = false,
+        genreId = listOf(
+            28, 53, 80
+        ),
         id = 603692,
         originalLanguage = "en",
         originalTitle = "John Wick: Chapter 4",
@@ -32,6 +36,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        genreId = listOf(16, 10751, 12, 14, 35),
         id = 502356,
         originalLanguage = "en",
         originalTitle = "The Super Mario Bros. Movie",
@@ -46,6 +51,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        genreId = listOf(28, 80, 53),
         id = 385687,
         originalLanguage = "en",
         originalTitle = "Fast X",
@@ -60,6 +66,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        genreId = listOf(12, 10751, 14, 10749),
         id = 447277,
         originalLanguage = "en",
         originalTitle = "The Little Mermaid",
@@ -74,6 +81,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        genreId = listOf(28, 12, 878),
         id = 640146,
         originalLanguage = "en",
         originalTitle = "Ant-Man and the Wasp: Quantumania",
@@ -88,6 +96,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        genreId = listOf(28, 10752),
         id = 840326,
         originalLanguage = "fi",
         originalTitle = "Sisu",
@@ -102,6 +111,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        genreId = listOf(28, 12, 16, 878),
         id = 569094,
         originalLanguage = "en",
         originalTitle = "Spider-Man: Across the Spider-Verse",
@@ -116,6 +126,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        genreId = listOf(53, 27),
         id = 713704,
         originalLanguage = "en",
         originalTitle = "Evil Dead Rise",
@@ -127,5 +138,20 @@ val PopularMovies: List<Movie> = listOf(
         video = false,
         voteAverage = 7.1,
         voteCount = 1465
+    ),
+    Movie(
+        adult = false,
+        genreId = listOf(878, 12, 28),
+        id = 76600,
+        originalLanguage = "en",
+        originalTitle = "Avatar: The Way of Water",
+        overview = "Set more than a decade after the events of the first film, learn the story of the Sully family (Jake, Neytiri, and their kids), the trouble that follows them, the lengths they go to keep each other safe, the battles they fight to stay alive, and the tragedies they endure.",
+        popularity = 1118.815,
+        posterPath = "/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+        releaseDate = "2022-12-14",
+        title = "Avatar: The Way of Water",
+        video = false,
+        voteAverage = 7.7,
+        voteCount = 8287
     )
 )

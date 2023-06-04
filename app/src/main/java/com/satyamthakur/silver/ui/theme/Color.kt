@@ -11,3 +11,6 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val StarColor = Color(0xFFFFC319)
+
+val CategoryBackground = Color(0xFFDBE3FF)
+val CategoryTextColor = Color(0xFF88A4E8)
