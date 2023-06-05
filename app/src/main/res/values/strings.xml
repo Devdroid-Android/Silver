@@ -4,4 +4,6 @@
     <string name="poster_description">Poster for %s</string>
     <string name="vote_average_template">%s/10 IMDb</string>
     <string name="popular">Popular</string>
+
+    <string name="no_internet">Please check your connection and try again</string>
 </resources>
