@@ -76,9 +76,10 @@ fun VerticalMovieItem(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = movie.title, style = MaterialTheme.typography.titleMedium.copy(
+                    text = movie.title,
+                    style = MaterialTheme.typography.titleMedium.copy(
                         fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Bold
                     ),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis

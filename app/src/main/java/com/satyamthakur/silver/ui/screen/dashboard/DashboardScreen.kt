@@ -87,7 +87,7 @@ fun DashboardScreen(
                             items = popularMovies.data ?: emptyList(),
                             key = { movie ->
                                 movie.id
-                            },
+                            }
                         ) { movie: Movie ->
                             HorizontalMovieItem(
                                 movie = movie,

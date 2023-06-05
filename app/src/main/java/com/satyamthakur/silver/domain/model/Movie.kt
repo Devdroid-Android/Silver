@@ -20,7 +20,9 @@ val PopularMovies: List<Movie> = listOf(
     Movie(
         adult = false,
         genreId = listOf(
-            28, 53, 80
+            28,
+            53,
+            80
         ),
         id = 603692,
         originalLanguage = "en",
