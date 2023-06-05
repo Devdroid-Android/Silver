@@ -113,7 +113,7 @@ fun VerticalMovieItem(
                     maxItemsInEachRow = 3,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    movie.genreId.forEach { genreID ->
+                    movie.genresID.forEach { genreID ->
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(100.dp))
