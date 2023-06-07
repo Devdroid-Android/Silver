@@ -5,6 +5,7 @@ import com.satyamthakur.silver.domain.model.Movie
 
 fun MovieDTO.asMovie() = Movie(
     adult = adult,
+    backdropPath = backdropPath,
     genresID = genresID,
     id = id,
     originalLanguage = originalLanguage,

@@ -8,5 +8,5 @@ data class GenericResultDTO<T>(
     val page: Int,
 
     @SerializedName("results")
-    val results: T,
+    val results: T
 )

@@ -6,4 +6,8 @@
     <string name="popular">Popular</string>
 
     <string name="no_internet">Please check your connection and try again</string>
+    <string name="now_showing">Now Showing</string>
+    <string name="retry">Retry</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="getting_the_movies_for_you">Getting the movies for you…</string>
 </resources>

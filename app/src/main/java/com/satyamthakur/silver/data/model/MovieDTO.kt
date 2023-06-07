@@ -7,6 +7,9 @@ data class MovieDTO(
     @SerializedName("adult")
     val adult: Boolean,
 
+    @SerializedName("backdrop_path")
+    val backdropPath: String,
+
     @SerializedName("genre_ids")
     val genresID: List<Int>,
 
@@ -41,5 +44,5 @@ data class MovieDTO(
     val voteAverage: Double,
 
     @SerializedName("vote_count")
-    val voteCount: Int,
+    val voteCount: Int
 )
