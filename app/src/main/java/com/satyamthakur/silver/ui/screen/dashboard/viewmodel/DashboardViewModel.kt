@@ -10,15 +10,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
 class DashboardViewModel(
-    private val repository: IMovieRepository
+    private val repository: IMovieRepository,
 ) : ViewModel() {
 
-    val popularMovies: StateFlow<Resource<List<Movie>>> =
-        repository.getPopularMovies()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(),
-                initialValue = Resource.None
-            )
+    val popularMovies: StateFlow<Resource<List<Movie>>> = repository
+        .getPopularMovies()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(15000),
+            initialValue = Resource.None
+        )
 
+    val nowShowingMovies: StateFlow<Resource<List<Movie>>> = repository
+        .getNowShowingMovies()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(15000),
+            initialValue = Resource.None
+        )
 }

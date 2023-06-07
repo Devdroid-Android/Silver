@@ -2,6 +2,7 @@ package com.satyamthakur.silver.domain.model
 
 data class Movie(
     val adult: Boolean,
+    val backdropPath: String,
     val genresID: List<Int>,
     val id: Int,
     val originalLanguage: String,
@@ -19,6 +20,7 @@ data class Movie(
 val PopularMovies: List<Movie> = listOf(
     Movie(
         adult = false,
+        backdropPath = "/fgw4rFs4XMWdJTWp1eMacHKQqbZ.jpg",
         genresID = listOf(
             28,
             53,
@@ -38,6 +40,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        backdropPath = "/2klQ1z1fcHGgQPevbEQdkCnzyuS.jpg",
         genresID = listOf(16, 10751, 12, 14, 35),
         id = 502356,
         originalLanguage = "en",
@@ -53,6 +56,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        backdropPath = "/4t0oBFrJyweYPt0hocW6RUa0b6H.jpg",
         genresID = listOf(28, 80, 53),
         id = 385687,
         originalLanguage = "en",
@@ -68,6 +72,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        backdropPath = "/2I5eBh98Q4aPq8WdQrHdTC8ARhY.jpg",
         genresID = listOf(12, 10751, 14, 10749),
         id = 447277,
         originalLanguage = "en",
@@ -83,6 +88,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        backdropPath = "/1IM8i8HiomFC4y6NRyBuDrHJWg3.jpg",
         genresID = listOf(28, 12, 878),
         id = 640146,
         originalLanguage = "en",
@@ -98,6 +104,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        backdropPath = "/aAgGrfBwna1nO4M2USxwFgK5O0t.jpg",
         genresID = listOf(28, 10752),
         id = 840326,
         originalLanguage = "fi",
@@ -113,6 +120,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        backdropPath = "/94TIUEhuwv8PhdIADEvSuwPljS5.jpg",
         genresID = listOf(28, 12, 16, 878),
         id = 569094,
         originalLanguage = "en",
@@ -128,6 +136,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        backdropPath = "/m8JTwHFwX7I7JY5fPe4SjqejWag.jpg",
         genresID = listOf(53, 27),
         id = 713704,
         originalLanguage = "en",
@@ -143,6 +152,7 @@ val PopularMovies: List<Movie> = listOf(
     ),
     Movie(
         adult = false,
+        backdropPath = "/5YZbUmjbMa3ClvSW1Wj3D6XGolb.jpg",
         genresID = listOf(878, 12, 28),
         id = 76600,
         originalLanguage = "en",

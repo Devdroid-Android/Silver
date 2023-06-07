@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -22,23 +24,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.satyamthakur.silver.R
 import com.satyamthakur.silver.domain.model.Movie
 import com.satyamthakur.silver.domain.model.PopularMovies
+import com.satyamthakur.silver.ui.theme.MerryWeather
 import com.satyamthakur.silver.ui.theme.SilverTheme
 import com.satyamthakur.silver.ui.theme.StarColor
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HorizontalMovieItem(
     movie: Movie,
     onCLicked: (Movie) -> Unit
 ) {
+    val context = LocalContext.current
     Surface(
         modifier = Modifier
             .clip(RoundedCornerShape(4.dp))
@@ -48,10 +55,15 @@ fun HorizontalMovieItem(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             AsyncImage(
-                model = stringResource(
-                    id = R.string.w_original_poster,
-                    movie.posterPath
-                ),
+                model = ImageRequest.Builder(context)
+                    .data(
+                        stringResource(
+                            id = R.string.w_original_poster,
+                            movie.posterPath
+                        )
+                    )
+                    .crossfade(true)
+                    .build(),
                 contentDescription = stringResource(
                     id = R.string.poster_description,
                     movie.title
@@ -59,26 +71,31 @@ fun HorizontalMovieItem(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center,
                 modifier = Modifier
-                    .width(150.dp)
-                    .aspectRatio(3 / 5F)
+                    .width(125.dp)
+                    .aspectRatio(2 / 3F)
                     .clip(RoundedCornerShape(4.dp))
             )
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
                     text = movie.title,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontSize = 14.sp,
-                        lineHeight = 16.sp
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = MerryWeather
                     ),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    modifier = Modifier.width(150.dp)
+                    modifier = Modifier
+                        .width(125.dp)
+                        .padding(horizontal = 4.dp)
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .padding(bottom = 4.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Star,
@@ -91,11 +108,11 @@ fun HorizontalMovieItem(
                             id = R.string.vote_average_template,
                             movie.voteAverage
                         ),
-                        style = MaterialTheme.typography.titleMedium.copy(
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = MerryWeather,
                             color = MaterialTheme.colorScheme.onSurface.copy(
                                 alpha = 0.5F
-                            ),
-                            fontSize = 12.sp
+                            )
                         )
                     )
                 }

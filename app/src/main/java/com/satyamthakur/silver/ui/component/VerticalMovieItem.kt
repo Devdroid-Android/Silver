@@ -39,6 +39,7 @@ import com.satyamthakur.silver.ui.theme.CategoryBackground
 import com.satyamthakur.silver.ui.theme.CategoryTextColor
 import com.satyamthakur.silver.ui.theme.SilverTheme
 import com.satyamthakur.silver.ui.theme.StarColor
+import com.satyamthakur.silver.utility.getMovieGenreByGenreID
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -108,21 +109,22 @@ fun VerticalMovieItem(
                     )
                 }
                 FlowRow(
-                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     maxItemsInEachRow = 3,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    movie.genresID.forEach { genreID ->
+                    movie.genresID.forEachIndexed { index, genreID ->
                         Box(
                             modifier = Modifier
+                                .padding(top = if (index > 2) 8.dp else 0.dp)
                                 .clip(RoundedCornerShape(100.dp))
                                 .background(CategoryBackground)
+
                         ) {
                             Text(
-                                text = genreID.toString(),
+                                text = getMovieGenreByGenreID(genreID).title,
                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize = 6.sp,
+                                    fontSize = 12.sp,
                                     color = CategoryTextColor
                                 ),
                                 modifier = Modifier.padding(

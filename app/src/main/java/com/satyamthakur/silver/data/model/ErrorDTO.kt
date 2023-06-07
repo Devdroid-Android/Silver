@@ -11,5 +11,5 @@ data class ErrorDTO(
     val statusMessage: String,
 
     @SerializedName("success")
-    val success: Boolean,
+    val success: Boolean
 )

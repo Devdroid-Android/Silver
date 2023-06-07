@@ -20,12 +20,26 @@ class MovieRepository(
     private val errorParser: ErrorParser,
     private val ioDispatcher: CoroutineContext = Dispatchers.IO
 ) : IMovieRepository {
+    override fun getNowShowingMovies(): Flow<Resource<List<Movie>>> {
+        return flow<Resource<List<Movie>>> {
+            val apiResult = movieApiService.getNowShowingMovies()
+            emit(Resource.Success(data = apiResult.results.map(MovieDTO::asMovie)))
+        }.catch { t ->
+            Timber.w(t)
+            emit(
+                Resource.Error(
+                    data = null,
+                    message = errorParser(t)
+                )
+            )
+        }.onStart {
+            emit(Resource.Loading)
+        }.flowOn(ioDispatcher)
+    }
 
     override fun getPopularMovies(): Flow<Resource<List<Movie>>> {
         return flow<Resource<List<Movie>>> {
-            Timber.d("Get Popular Movies called")
             val apiResult = movieApiService.getPopularMovies()
-            Timber.d("API returned ${apiResult.results.size} movies")
             emit(Resource.Success(data = apiResult.results.map(MovieDTO::asMovie)))
         }.catch { t ->
             Timber.w(t)

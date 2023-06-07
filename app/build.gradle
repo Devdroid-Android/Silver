@@ -8,6 +8,9 @@ android {
     namespace 'com.satyamthakur.silver'
     compileSdk 33
 
+    def Properties properties = new Properties()
+    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
     defaultConfig {
         applicationId "com.satyamthakur.silver"
         minSdk 26
@@ -15,6 +18,7 @@ android {
         versionCode 1
         versionName "1.0"
 
+        resValue "string", "api_key", properties.getProperty("api.key", "")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
@@ -36,6 +40,7 @@ android {
     }
     buildFeatures {
         compose true
+        buildConfig true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.6'
@@ -72,10 +77,10 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
     //  Sys UI Controller - Navigation Animation
-    def accompanistVersion = "0.31.2-alpha"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
-    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanistVersion"
-    implementation "com.google.accompanist:accompanist-flowlayout:$accompanistVersion"
+    def accompanist_version = "0.31.2-alpha"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
 
     //  Logging Interceptor
     implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6"
@@ -84,24 +89,28 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended"
 
     //  Koin
-    implementation "io.insert-koin:koin-android:3.4.1"
-    implementation "io.insert-koin:koin-androidx-compose:3.4.1"
+    def koin_version = "3.4.1"
+    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
+    testImplementation "io.insert-koin:koin-test:$koin_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
     //  Retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    def retrofit_version = "2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
     //  ViewModel - Lifecycle
-    def lifecycleVersion = "2.6.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion"
+    def lifecycle_version = "2.6.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
 
     // Coroutines
-    def coroutinesVersion = "1.7.1"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    def coroutines_version = "1.7.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
 
     // Coil
