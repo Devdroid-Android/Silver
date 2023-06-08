@@ -42,7 +42,7 @@ fun ActorDTO.asActor() = Actor(
     name = actorName,
     place_of_birth = placeOfBirth,
     popularity = popularity,
-    profile_path = profilePath,
+    profile_path = profilePath
 )
 
 fun CrewDTO.asCrew() = Crew(
@@ -56,7 +56,7 @@ fun CrewDTO.asCrew() = Crew(
     name = name,
     originalName = originalName,
     popularity = popularity,
-    profilePath = profilePath,
+    profilePath = profilePath
 )
 
 fun CastDTO.asCast() = Cast(
@@ -71,7 +71,7 @@ fun CastDTO.asCast() = Cast(
     order = order,
     originalName = originalName,
     popularity = popularity,
-    profilePath = profilePath,
+    profilePath = profilePath
 )
 
 fun CreditsDTO.asCredits(): Credits {
@@ -92,8 +92,3 @@ fun CreditsDTO.asCredits(): Credits {
         movieId = movieId
     )
 }
-
-
-
-
-

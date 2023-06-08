@@ -4,47 +4,40 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.satyamthakur.silver.data.repository.IMovieRepository
 import com.satyamthakur.silver.domain.model.Movie
-import com.satyamthakur.silver.domain.model.cast.Actor
-import com.satyamthakur.silver.domain.model.cast.Credits
 import com.satyamthakur.silver.utility.Resource
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class DashboardViewModel(
-    private val repository: IMovieRepository,
+    private val repository: IMovieRepository
 ) : ViewModel() {
 
-    val popularMovies: StateFlow<Resource<List<Movie>>> = repository
-        .getPopularMovies()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(15000),
-            initialValue = Resource.None
-        )
+    private val _nowShowingMovies: MutableStateFlow<Resource<List<Movie>>> =
+        MutableStateFlow(Resource.None)
+    val nowShowingMovies: StateFlow<Resource<List<Movie>>> = _nowShowingMovies.asStateFlow()
 
-    val nowShowingMovies: StateFlow<Resource<List<Movie>>> = repository
-        .getNowShowingMovies()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(15000),
-            initialValue = Resource.None
-        )
+    private val _popularMovies: MutableStateFlow<Resource<List<Movie>>> =
+        MutableStateFlow(Resource.None)
+    val popularMovies: StateFlow<Resource<List<Movie>>> = _popularMovies.asStateFlow()
 
-    fun filmDetails(movieId: Int): StateFlow<Resource<Credits>> = repository
-        .getCredits(movieId)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(15000),
-            initialValue = Resource.None
-        )
+    fun getNowShowingMovies() = viewModelScope.launch {
+        repository.getNowShowingMovies().collectLatest { nowShowingMoviesResult ->
+            _nowShowingMovies.update { nowShowingMoviesResult }
+        }
+    }
 
-    fun showActorInfo(actorId: Int): StateFlow<Resource<Actor>> = repository
-        .getActor(actorId)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(15000),
-            initialValue = Resource.None
-        )
+    fun getPopularMovies() = viewModelScope.launch {
+        repository.getPopularMovies().collectLatest { popularMoviesResult ->
+            _popularMovies.update { popularMoviesResult }
+        }
+    }
 
+    init {
+        getNowShowingMovies()
+        getPopularMovies()
+    }
 }
