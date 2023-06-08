@@ -2,134 +2,156 @@ package com.satyamthakur.silver.ui.screen.dashboard
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Button
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.satyamthakur.silver.R
 import com.satyamthakur.silver.domain.model.Movie
 import com.satyamthakur.silver.domain.model.PopularMovies
-import com.satyamthakur.silver.ui.component.HorizontalMovieItem
-import com.satyamthakur.silver.ui.component.VerticalMovieItem
+import com.satyamthakur.silver.ui.screen.dashboard.component.HorizontalMovies
 import com.satyamthakur.silver.ui.screen.dashboard.component.SectionSeparator
+import com.satyamthakur.silver.ui.screen.dashboard.component.VerticalMovies
 import com.satyamthakur.silver.ui.theme.SilverTheme
 import com.satyamthakur.silver.utility.Resource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
     onMovieClicked: (Movie) -> Unit,
+    nowShowingMovies: Resource<List<Movie>>,
+    onNowShowingMoviesRetry: () -> Unit,
+    onSeeMoreNowShowingMovies: () -> Unit,
     popularMovies: Resource<List<Movie>>,
     onSeeMorePopularMoviesClicked: () -> Unit,
-    airingMovies: Resource<List<Movie>>,
-    onSeeMoreAiringMoviesClicked: () -> Unit
+    onPopularMoviesRetry: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Scaffold(topBar = {
-        CenterAlignedTopAppBar(title = {
-            Text(
-                text = stringResource(id = R.string.app_name),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Black,
-                    fontSize = 16.sp
-                )
-            )
-        })
-    }) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-        ) {
-            SectionSeparator(
-                sectionTitle = stringResource(R.string.popular),
-                onSeeMoreClick = onSeeMorePopularMoviesClicked
-            )
-            Spacer(
+    Column(
+        modifier = modifier
+    ) {
+        if (nowShowingMovies is Resource.Loading && popularMovies is Resource.Loading) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(
+                    12.dp,
+                    Alignment.CenterVertically
+                ),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(16.dp)
-            )
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(
-                    horizontal = 24.dp
-                )
+                    .fillMaxSize()
             ) {
-                when (popularMovies) {
-                    is Resource.Error -> Unit
-                    Resource.Loading -> Unit
+                Text(text = stringResource(R.string.getting_the_movies_for_you))
+                LinearProgressIndicator()
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(2f)
+            ) {
+                SectionSeparator(
+                    sectionTitle = stringResource(id = R.string.now_showing),
+                    onSeeMoreClick = onSeeMoreNowShowingMovies
+                )
+                when (nowShowingMovies) {
+                    is Resource.Error -> {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(
+                                8.dp,
+                                Alignment.CenterVertically
+                            ),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) {
+                            Text(
+                                text = nowShowingMovies.message
+                                    ?: stringResource(id = R.string.unknown_error),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp)
+                            )
+                            Button(onClick = onNowShowingMoviesRetry) {
+                                Text(text = stringResource(id = R.string.retry))
+                            }
+                        }
+                    }
+
+                    Resource.Loading -> {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
                     Resource.None -> Unit
                     is Resource.Success -> {
-                        items(
-                            items = popularMovies.data ?: emptyList(),
-                            key = { movie ->
-                                movie.id
-                            }
-                        ) { movie: Movie ->
-                            HorizontalMovieItem(
-                                movie = movie,
-                                onCLicked = onMovieClicked
-                            )
-                        }
+                        HorizontalMovies(
+                            movies = nowShowingMovies.data ?: emptyList(),
+                            onMovieClicked = onMovieClicked
+                        )
                     }
                 }
             }
-            Spacer(
+
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(24.dp)
-            )
-            SectionSeparator(
-                sectionTitle = stringResource(R.string.popular),
-                onSeeMoreClick = onSeeMoreAiringMoviesClicked
-            )
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(
-                    vertical = 8.dp,
-                    horizontal = 24.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .fillMaxSize()
+                    .weight(3f)
             ) {
-                when (airingMovies) {
-                    is Resource.Error -> Unit
-                    Resource.Loading -> Unit
+                SectionSeparator(
+                    sectionTitle = stringResource(id = R.string.now_showing),
+                    onSeeMoreClick = onSeeMorePopularMoviesClicked
+                )
+                when (popularMovies) {
+                    is Resource.Error -> {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(
+                                8.dp,
+                                Alignment.CenterVertically
+                            ),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) {
+                            Text(
+                                text = popularMovies.message
+                                    ?: stringResource(id = R.string.unknown_error),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp)
+                            )
+                            Button(onClick = onPopularMoviesRetry) {
+                                Text(text = stringResource(id = R.string.retry))
+                            }
+                        }
+                    }
+
+                    Resource.Loading -> {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
                     Resource.None -> Unit
                     is Resource.Success -> {
-                        items(
-                            items = airingMovies.data ?: emptyList(),
-                            key = { movie ->
-                                movie.id
-                            }
-                        ) { movie ->
-                            VerticalMovieItem(
-                                movie = movie,
-                                onMovieClicked = onMovieClicked
-                            )
-                        }
+                        VerticalMovies(
+                            movies = popularMovies.data ?: emptyList(),
+                            onMovieClicked = onMovieClicked,
+                            modifier = Modifier.weight(1f)
+                        )
                     }
                 }
             }
@@ -147,10 +169,12 @@ fun PreviewDashboardScreen() {
         Surface {
             DashboardScreen(
                 onMovieClicked = {},
+                nowShowingMovies = popularMovies.value,
+                onSeeMoreNowShowingMovies = {},
+                onNowShowingMoviesRetry = {},
                 popularMovies = popularMovies.value,
                 onSeeMorePopularMoviesClicked = {},
-                airingMovies = popularMovies.value,
-                onSeeMoreAiringMoviesClicked = {}
+                onPopularMoviesRetry = {}
             )
         }
     }

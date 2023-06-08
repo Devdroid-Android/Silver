@@ -17,8 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.satyamthakur.silver.R
+import com.satyamthakur.silver.ui.theme.MerryWeather
 
 @Composable
 fun SectionSeparator(
@@ -30,14 +30,15 @@ fun SectionSeparator(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = 24.dp
+                horizontal = 24.dp,
+                vertical = 12.dp
             )
     ) {
         Text(
             text = sectionTitle,
             style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontFamily = MerryWeather,
+                fontWeight = FontWeight.Black
             )
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -54,8 +55,9 @@ fun SectionSeparator(
         ) {
             Text(
                 text = stringResource(R.string.see_more),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 10.sp,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.Light,
+                    fontFamily = MerryWeather,
                     color = MaterialTheme.colorScheme.onSurface.copy(
                         alpha = 0.5F
                     )
