@@ -30,7 +30,8 @@ fun SectionSeparator(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = 24.dp
+                horizontal = 24.dp,
+                vertical = 12.dp
             )
     ) {
         Text(
