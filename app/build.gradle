@@ -8,8 +8,10 @@ android {
     namespace 'com.satyamthakur.silver'
     compileSdk 33
 
-    def Properties properties = new Properties()
-    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+    Properties properties = new Properties()
+    if (project.rootProject.file("local.properties").exists()) {
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+    }
 
     defaultConfig {
         applicationId "com.satyamthakur.silver"
