@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.satyamthakur.silver.data.repository.IMovieRepository
 import com.satyamthakur.silver.domain.model.Movie
+import com.satyamthakur.silver.domain.model.cast.Actor
+import com.satyamthakur.silver.domain.model.cast.Credits
 import com.satyamthakur.silver.utility.Resource
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,4 +30,21 @@ class DashboardViewModel(
             started = SharingStarted.WhileSubscribed(15000),
             initialValue = Resource.None
         )
+
+    fun filmDetails(movieId: Int): StateFlow<Resource<Credits>> = repository
+        .getCredits(movieId)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(15000),
+            initialValue = Resource.None
+        )
+
+    fun showActorInfo(actorId: Int): StateFlow<Resource<Actor>> = repository
+        .getActor(actorId)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(15000),
+            initialValue = Resource.None
+        )
+
 }

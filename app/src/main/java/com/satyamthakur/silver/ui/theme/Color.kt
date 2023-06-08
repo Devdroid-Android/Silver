@@ -14,3 +14,4 @@ val StarColor = Color(0xFFFFC319)
 
 val CategoryBackground = Color(0xFFDBE3FF)
 val CategoryTextColor = Color(0xFF88A4E8)
+val DarkBlueColor = Color(0xFF110E47)
