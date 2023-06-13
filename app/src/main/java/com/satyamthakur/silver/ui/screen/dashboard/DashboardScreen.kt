@@ -1,5 +1,6 @@
 package com.satyamthakur.silver.ui.screen.dashboard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,17 +11,16 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.satyamthakur.silver.R
 import com.satyamthakur.silver.domain.model.Movie
-import com.satyamthakur.silver.domain.model.PopularMovies
+import com.satyamthakur.silver.ui.component.VerticalMovieItem
 import com.satyamthakur.silver.ui.screen.dashboard.component.HorizontalMovies
 import com.satyamthakur.silver.ui.screen.dashboard.component.SectionSeparator
 import com.satyamthakur.silver.ui.screen.dashboard.component.VerticalMovies
@@ -38,9 +38,7 @@ fun DashboardScreen(
     onPopularMoviesRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         if (nowShowingMovies is Resource.Loading && popularMovies is Resource.Loading) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,18 +46,13 @@ fun DashboardScreen(
                     12.dp,
                     Alignment.CenterVertically
                 ),
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
                 Text(text = stringResource(R.string.getting_the_movies_for_you))
                 LinearProgressIndicator()
             }
         } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(2f)
-            ) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 SectionSeparator(
                     sectionTitle = stringResource(id = R.string.now_showing),
                     onSeeMoreClick = onSeeMoreNowShowingMovies
@@ -72,8 +65,7 @@ fun DashboardScreen(
                                 Alignment.CenterVertically
                             ),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .fillMaxSize()
+                            modifier = Modifier.fillMaxSize()
                         ) {
                             Text(
                                 text = nowShowingMovies.message
@@ -90,9 +82,7 @@ fun DashboardScreen(
                     }
 
                     Resource.Loading -> {
-                        LinearProgressIndicator(
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
 
                     Resource.None -> Unit
@@ -103,15 +93,21 @@ fun DashboardScreen(
                         )
                     }
                 }
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(3f)
-            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(16.dp)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.background,
+                                    Color.Transparent
+                                )
+                            )
+                        )
+                )
                 SectionSeparator(
-                    sectionTitle = stringResource(id = R.string.now_showing),
+                    sectionTitle = stringResource(R.string.popular),
                     onSeeMoreClick = onSeeMorePopularMoviesClicked
                 )
                 when (popularMovies) {
@@ -122,8 +118,7 @@ fun DashboardScreen(
                                 Alignment.CenterVertically
                             ),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .fillMaxSize()
+                            modifier = Modifier.fillMaxSize()
                         ) {
                             Text(
                                 text = popularMovies.message
@@ -140,17 +135,14 @@ fun DashboardScreen(
                     }
 
                     Resource.Loading -> {
-                        LinearProgressIndicator(
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
 
                     Resource.None -> Unit
                     is Resource.Success -> {
                         VerticalMovies(
                             movies = popularMovies.data ?: emptyList(),
-                            onMovieClicked = onMovieClicked,
-                            modifier = Modifier.weight(1f)
+                            onMovieClicked = onMovieClicked
                         )
                     }
                 }
