@@ -1,5 +1,11 @@
 package com.satyamthakur.silver.domain.model
 
+import android.os.Bundle
+import com.google.gson.Gson
+import com.google.gson.annotations.JsonAdapter
+import com.satyamthakur.silver.utility.JsonNavType
+import java.io.Serializable
+
 data class Movie(
     val adult: Boolean,
     val backdropPath: String,
@@ -15,7 +21,14 @@ data class Movie(
     val video: Boolean,
     val voteAverage: Double,
     val voteCount: Int
-)
+) : Serializable
+
+class MovieArgumentType: JsonNavType<Movie>(){
+    override fun fromJsonParse(value: String): Movie = Gson().fromJson(value, Movie::class.java)
+
+    override fun Movie.getJsonParse(): String = Gson().toJson(this)
+
+}
 
 val PopularMovies: List<Movie> = listOf(
     Movie(

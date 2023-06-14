@@ -2,13 +2,15 @@ package com.satyamthakur.silver.ui.screen.dashboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,15 +19,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.Navigator
+import com.satyamthakur.silver.R
 import com.satyamthakur.silver.domain.model.Movie
-import com.satyamthakur.silver.ui.component.VerticalMovieItem
 import com.satyamthakur.silver.ui.screen.dashboard.component.HorizontalMovies
 import com.satyamthakur.silver.ui.screen.dashboard.component.SectionSeparator
 import com.satyamthakur.silver.ui.screen.dashboard.component.VerticalMovies
-import com.satyamthakur.silver.ui.theme.SilverTheme
 import com.satyamthakur.silver.utility.Resource
+import com.satyamthakur.silver.utility.Screen
 
 @Composable
 fun DashboardScreen(
@@ -36,7 +39,8 @@ fun DashboardScreen(
     popularMovies: Resource<List<Movie>>,
     onSeeMorePopularMoviesClicked: () -> Unit,
     onPopularMoviesRetry: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     Column(modifier = modifier) {
         if (nowShowingMovies is Resource.Loading && popularMovies is Resource.Loading) {
@@ -89,7 +93,12 @@ fun DashboardScreen(
                     is Resource.Success -> {
                         HorizontalMovies(
                             movies = nowShowingMovies.data ?: emptyList(),
-                            onMovieClicked = onMovieClicked
+                            onMovieClicked = {
+                                navController.currentBackStackEntry?.arguments?.putSerializable("movieItem", it)
+                                navController.navigate(
+                                    Screen.MovieScreen.route + "/{movieItem}"
+                                )
+                            }
                         )
                     }
                 }
@@ -151,23 +160,23 @@ fun DashboardScreen(
     }
 }
 
-@Preview
-@Composable
-fun PreviewDashboardScreen() {
-    val popularMovies = remember {
-        mutableStateOf(Resource.Success(PopularMovies))
-    }
-    SilverTheme {
-        Surface {
-            DashboardScreen(
-                onMovieClicked = {},
-                nowShowingMovies = popularMovies.value,
-                onSeeMoreNowShowingMovies = {},
-                onNowShowingMoviesRetry = {},
-                popularMovies = popularMovies.value,
-                onSeeMorePopularMoviesClicked = {},
-                onPopularMoviesRetry = {}
-            )
-        }
-    }
-}
+//@Preview
+//@Composable
+//fun PreviewDashboardScreen() {
+//    val popularMovies = remember {
+//        mutableStateOf(Resource.Success(PopularMovies))
+//    }
+//    SilverTheme {
+//        Surface {
+//            DashboardScreen(
+//                onMovieClicked = {},
+//                nowShowingMovies = popularMovies.value,
+//                onSeeMoreNowShowingMovies = {},
+//                onNowShowingMoviesRetry = {},
+//                popularMovies = popularMovies.value,
+//                onSeeMorePopularMoviesClicked = {},
+//                onPopularMoviesRetry = {},
+//            )
+//        }
+//    }
+//}

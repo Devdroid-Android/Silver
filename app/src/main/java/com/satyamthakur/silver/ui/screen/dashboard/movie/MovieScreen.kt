@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,14 +50,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.satyamthakur.silver.R
 import com.satyamthakur.silver.domain.model.Movie
 import com.satyamthakur.silver.domain.model.PopularMovies
+import com.satyamthakur.silver.domain.model.cast.Cast
 import com.satyamthakur.silver.ui.screen.dashboard.viewmodel.DashboardViewModel
 import com.satyamthakur.silver.ui.theme.CategoryBackground
 import com.satyamthakur.silver.ui.theme.CategoryTextColor
 import com.satyamthakur.silver.ui.theme.DarkBlueColor
 import com.satyamthakur.silver.ui.theme.StarColor
+import com.satyamthakur.silver.utility.Resource
+import org.jetbrains.annotations.Async
+import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,10 +74,17 @@ fun MovieScreen(
 ) {
 
     val viewModel = koinViewModel<DashboardViewModel>()
+    val creditsData by viewModel.credits.collectAsStateWithLifecycle()
 
-    // add later
-    // val filmDetails by viewModel.filmDetails(movie.id).collectAsStateWithLifecycle()
-    // val actorInfo by viewModel.showActorInfo(filmDetails.movieId).collectAsStateWithLifecycle()
+    var cast by remember { mutableStateOf <List<Cast>>(emptyList()) }
+
+    LaunchedEffect(
+        key1 = creditsData,
+        block = {
+            viewModel.getCreditsData(movie.id)
+            cast = creditsData.data!!.cast
+        }
+    )
 
     Scaffold(
 
@@ -109,17 +123,19 @@ fun MovieScreen(
         }
 
     ) {
-        MoviePoster()
+        MoviePoster(
+            castList = cast,
+            movie = movie
+        )
     }
 
 }
 
 @Composable
 fun MoviePoster(
-
+    castList: List<Cast>,
+    movie: Movie
 ) {
-
-    var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
     val lazyListState = rememberLazyListState()
     var scrolledY = 0f
@@ -161,7 +177,7 @@ fun MoviePoster(
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
-                        text = PopularMovies[0].title,
+                        text = movie.title,
                         maxLines = 2,
                         style = MaterialTheme.typography.titleMedium,
                         fontSize = 20.sp
@@ -190,7 +206,7 @@ fun MoviePoster(
                     Text(
                         text = stringResource(
                             id = R.string.vote_average_template,
-                            PopularMovies[0].voteAverage
+                            movie.voteAverage
                         ),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = MaterialTheme.colorScheme.onSurface.copy(
@@ -205,7 +221,7 @@ fun MoviePoster(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.padding(top = 15.dp)
                 ) {
-                    for (genre in PopularMovies[0].genresID){
+                    for (genre in movie.genresID){
                         Text(
                             text = genre.toString(),
                             modifier = Modifier
@@ -234,7 +250,7 @@ fun MoviePoster(
                             fontSize = 12.sp
                         )
                         Text(
-                            text = PopularMovies[0].id.toString(),
+                            text = movie.id.toString(),
                             style = MaterialTheme.typography.titleMedium,
                             fontSize = 12.sp
                         )
@@ -250,7 +266,7 @@ fun MoviePoster(
                             fontSize = 12.sp
                         )
                         Text(
-                            text = PopularMovies[0].originalLanguage,
+                            text = movie.originalLanguage,
                             style = MaterialTheme.typography.titleMedium,
                             fontSize = 12.sp
                         )
@@ -266,7 +282,7 @@ fun MoviePoster(
                             fontSize = 12.sp
                         )
                         Text(
-                            text = PopularMovies[0].id.toString(),
+                            text = movie.id.toString(),
                             style = MaterialTheme.typography.titleMedium,
                             fontSize = 12.sp
                         )
@@ -282,7 +298,7 @@ fun MoviePoster(
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = PopularMovies[0].overview,
+                    text = movie.overview,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface.copy(
                             alpha = 0.5f
@@ -320,26 +336,28 @@ fun MoviePoster(
 
                     )
                 }
-                CastMovie()
+                CastMovie(castList = castList)
             }
         }
     }
 }
 
 @Composable
-fun CastMovie(){
+fun CastMovie(
+    castList: List<Cast>
+){
     LazyRow(
         modifier = Modifier
         .padding(top = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ){
-        items(6){
+        items(castList.size){ index ->
             Column(
                 modifier = Modifier.width(100.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.mock_cast_image),
+                AsyncImage(
+                    model = castList[index].profilePath,
                     contentDescription = null,
                     modifier = Modifier
                         .height(100.dp)
@@ -347,7 +365,7 @@ fun CastMovie(){
                         .clip(RoundedCornerShape(15.dp))
                 )
                 Text(
-                    text = "Keanu Reeves",
+                    text = castList[index].name,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = DarkBlueColor
                     ),

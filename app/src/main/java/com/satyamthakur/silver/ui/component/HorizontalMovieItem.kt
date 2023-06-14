@@ -35,6 +35,7 @@ import coil.request.ImageRequest
 import com.satyamthakur.silver.R
 import com.satyamthakur.silver.domain.model.Movie
 import com.satyamthakur.silver.domain.model.PopularMovies
+import com.satyamthakur.silver.ui.screen.dashboard.movie.MovieScreen
 import com.satyamthakur.silver.ui.theme.MerryWeather
 import com.satyamthakur.silver.ui.theme.SilverTheme
 import com.satyamthakur.silver.ui.theme.StarColor
@@ -130,7 +131,9 @@ fun PreviewHorizontalMovieItem() {
     SilverTheme {
         HorizontalMovieItem(
             movie = movie,
-            onCLicked = {}
+            onCLicked = {
+                
+            }
         )
     }
 }
