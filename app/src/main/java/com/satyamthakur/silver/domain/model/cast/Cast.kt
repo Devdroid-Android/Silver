@@ -12,5 +12,5 @@ data class Cast(
     val order: Int,
     val originalName: String,
     val popularity: Double,
-    val profilePath: String
+    val profilePath: String?
 )

@@ -28,8 +28,9 @@ interface MovieEndpoint {
         @Query("language") language: String = "en-Us"
     ): ActorDTO
 
-    @GET("movie/{movie_id}")
+    @GET("movie/{movie_id}/credits")
     suspend fun getCreditsMovie(
-        @Path(value = "movie_id") movieId: Int
+        @Path(value = "movie_id") movieId: Int,
     ): CreditsDTO
+
 }

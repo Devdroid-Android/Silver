@@ -2,9 +2,9 @@ package com.satyamthakur.silver.data.repository
 
 import com.satyamthakur.silver.data.model.MovieDTO
 import com.satyamthakur.silver.data.remote.MovieEndpoint
-import com.satyamthakur.silver.domain.mapper.asMovie
 import com.satyamthakur.silver.domain.mapper.asActor
 import com.satyamthakur.silver.domain.mapper.asCredits
+import com.satyamthakur.silver.domain.mapper.asMovie
 import com.satyamthakur.silver.domain.model.Movie
 import com.satyamthakur.silver.domain.model.cast.Actor
 import com.satyamthakur.silver.domain.model.cast.Credits
@@ -13,6 +13,7 @@ import com.satyamthakur.silver.utility.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
@@ -74,7 +75,7 @@ class MovieRepository(
                     message = errorParser(t)
                 )
             )
-        }.onStart {
+        }.distinctUntilChanged().onStart {
             emit(Resource.Loading)
         }.flowOn(ioDispatcher)
     }
@@ -95,7 +96,7 @@ class MovieRepository(
                     message = errorParser(t)
                 )
             )
-        }.onStart {
+        }.distinctUntilChanged().onStart {
             emit(Resource.Loading)
         }.flowOn(ioDispatcher)
     }

@@ -43,6 +43,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberAnimatedNavController()
+
+            val viewModel = koinViewModel<DashboardViewModel>()
+            val nowShowingMovies by viewModel.nowShowingMovies.collectAsStateWithLifecycle()
+            val popularMovies by viewModel.popularMovies.collectAsStateWithLifecycle()
+            val creditsData by viewModel.credits.collectAsStateWithLifecycle()
+
             SilverTheme {
                 Surface {
                     Scaffold(
@@ -63,10 +69,6 @@ class MainActivity : ComponentActivity() {
                             startDestination = Screen.Dashboard.route
                         ) {
                             composable(route = Screen.Dashboard.route) {
-                                val viewModel = koinViewModel<DashboardViewModel>()
-                                val nowShowingMovies by viewModel.nowShowingMovies.collectAsStateWithLifecycle()
-                                val popularMovies by viewModel.popularMovies.collectAsStateWithLifecycle()
-
 
 
                                 DashboardScreen(
@@ -83,20 +85,22 @@ class MainActivity : ComponentActivity() {
                                     navController = navController
                                 )
                             }
-                            composable(route = Screen.MovieScreen.route + "/{movieItem}",
-//                                    + "/{movieItem}",
+                            composable(route = Screen.MovieScreen.route
+                                    + "/{movieItem}",
                                 arguments = listOf(
                                     navArgument("movieItem"){
                                         type = NavType.SerializableType(Movie::class.java)
                                     }
                                 )
                             ){ navBackStackEntry ->
+
                                 val movieItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                     navBackStackEntry.arguments?.getSerializable("movieItem", Movie::class.java)
                                 } else {
                                     navBackStackEntry.arguments?.getSerializable("movieItem")
                                 } as Movie
-                                MovieScreen(movie = movieItem)
+
+                                MovieScreen(movie = movieItem, creditsData )
                             }
                         }
                     }

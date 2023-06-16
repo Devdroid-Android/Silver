@@ -22,9 +22,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -46,6 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -56,6 +59,7 @@ import com.satyamthakur.silver.R
 import com.satyamthakur.silver.domain.model.Movie
 import com.satyamthakur.silver.domain.model.PopularMovies
 import com.satyamthakur.silver.domain.model.cast.Cast
+import com.satyamthakur.silver.domain.model.cast.Credits
 import com.satyamthakur.silver.ui.screen.dashboard.viewmodel.DashboardViewModel
 import com.satyamthakur.silver.ui.theme.CategoryBackground
 import com.satyamthakur.silver.ui.theme.CategoryTextColor
@@ -71,63 +75,75 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun MovieScreen(
     movie: Movie,
+    creditsData: Resource<Credits>
 ) {
 
     val viewModel = koinViewModel<DashboardViewModel>()
-    val creditsData by viewModel.credits.collectAsStateWithLifecycle()
+//    val creditsData by viewModel.credits.collectAsStateWithLifecycle()
 
-    var cast by remember { mutableStateOf <List<Cast>>(emptyList()) }
+    var cast by remember { mutableStateOf<List<Cast>?>(emptyList()) }
+    cast = creditsData.data?.cast
 
     LaunchedEffect(
         key1 = creditsData,
         block = {
-            viewModel.getCreditsData(movie.id)
-            cast = creditsData.data!!.cast
+            viewModel.getCreditsData(
+                movie.id
+            )
+            cast = creditsData.data?.cast
         }
     )
 
-    Scaffold(
-
-        topBar = {
-            TopAppBar(modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp),
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = Color.Transparent
-                ),
-                title = {},
-                navigationIcon = {
-                    IconButton(
-                        onClick = { }
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_back),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.background
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(
-                        onClick = { }
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_more),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.background
-                        )
-                    }
-                }
-            )
+    when (cast) {
+        null -> {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
+        else -> {
+            Scaffold(
 
-    ) {
-        MoviePoster(
-            castList = cast,
-            movie = movie
-        )
+                topBar = {
+                    TopAppBar(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp),
+                        colors = TopAppBarDefaults.smallTopAppBarColors(
+                            containerColor = Color.Transparent,
+                            titleContentColor = Color.Transparent
+                        ),
+                        title = {},
+                        navigationIcon = {
+                            IconButton(
+                                onClick = { }
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_back),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.background
+                                )
+                            }
+                        },
+                        actions = {
+                            IconButton(
+                                onClick = { }
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_more),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.background
+                                )
+                            }
+                        }
+                    )
+                }
+
+            ) {
+                MoviePoster(
+                    castList = cast!!,
+                    movie = movie
+                )
+            }
+        }
     }
+
 
 }
 
@@ -145,7 +161,7 @@ fun MoviePoster(
         Modifier
             .fillMaxSize(),
         lazyListState
-    ){
+    ) {
         item {
             Image(
                 painter = painterResource(id = R.drawable.mock_poster),
@@ -161,7 +177,7 @@ fun MoviePoster(
                     .fillMaxHeight(0.3f),
             )
         }
-        items(1){
+        items(1) {
             Column(
                 modifier = Modifier
                     .background(
@@ -172,20 +188,22 @@ fun MoviePoster(
                         horizontal = 20.dp,
                         vertical = 20.dp
                     )
-            ){
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Text(
                         text = movie.title,
                         maxLines = 2,
                         style = MaterialTheme.typography.titleMedium,
                         fontSize = 20.sp
                     )
-                    Spacer(modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth())
-                    IconButton(onClick = {  }) {
+                    Spacer(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                    )
+                    IconButton(onClick = { }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_bookmark),
                             contentDescription = null,
@@ -221,11 +239,14 @@ fun MoviePoster(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.padding(top = 15.dp)
                 ) {
-                    for (genre in movie.genresID){
+                    for (genre in movie.genresID) {
                         Text(
                             text = genre.toString(),
                             modifier = Modifier
-                                .background(color = CategoryBackground, shape = RoundedCornerShape(20)),
+                                .background(
+                                    color = CategoryBackground,
+                                    shape = RoundedCornerShape(20)
+                                ),
                             style = MaterialTheme.typography.labelMedium.copy(
                                 color = CategoryTextColor
                             ),
@@ -345,14 +366,14 @@ fun MoviePoster(
 @Composable
 fun CastMovie(
     castList: List<Cast>
-){
+) {
     LazyRow(
         modifier = Modifier
-        .padding(top = 20.dp),
+            .padding(top = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
-    ){
-        items(castList.size){ index ->
+    ) {
+        items(castList.size) { index ->
             Column(
                 modifier = Modifier.width(100.dp)
             ) {
