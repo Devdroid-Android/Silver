@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Silver</string>
+    <string name="see_more">See More</string>
+    <string name="poster_description">Poster for %s</string>
+    <string name="vote_average_template">%s/10 IMDb</string>
+    <string name="popular">Popular</string>
+    <string name="length">Length</string>
+    <string name="language">Language</string>
+    <string name="rating">Rating</string>
+    <string name="description">Description</string>
+    <string name="cast">Cast</string>
+    <string name="no_internet">Please check your connection and try again</string>
+    <string name="now_showing">Now Showing</string>
+    <string name="retry">Retry</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="getting_the_movies_for_you">Getting the movies for you…</string>
 </resources>
