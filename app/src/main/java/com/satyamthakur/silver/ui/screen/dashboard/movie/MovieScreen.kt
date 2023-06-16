@@ -1,11 +1,13 @@
 package com.satyamthakur.silver.ui.screen.dashboard.movie
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,16 +47,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.satyamthakur.silver.R
 import com.satyamthakur.silver.domain.model.Movie
 import com.satyamthakur.silver.domain.model.PopularMovies
@@ -66,26 +72,30 @@ import com.satyamthakur.silver.ui.theme.CategoryTextColor
 import com.satyamthakur.silver.ui.theme.DarkBlueColor
 import com.satyamthakur.silver.ui.theme.StarColor
 import com.satyamthakur.silver.utility.Resource
+import com.satyamthakur.silver.utility.Screen
+import com.satyamthakur.silver.utility.getMovieGenreByGenreID
 import org.jetbrains.annotations.Async
 import org.koin.androidx.compose.koinViewModel
+import org.koin.dsl.module
+import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun MovieScreen(
+    navController: NavController,
     movie: Movie,
-    creditsData: Resource<Credits>
 ) {
 
     val viewModel = koinViewModel<DashboardViewModel>()
-//    val creditsData by viewModel.credits.collectAsStateWithLifecycle()
+    val creditsData by viewModel.credits.collectAsStateWithLifecycle()
 
     var cast by remember { mutableStateOf<List<Cast>?>(emptyList()) }
     cast = creditsData.data?.cast
 
     LaunchedEffect(
-        key1 = creditsData,
+        key1 = Unit,
         block = {
             viewModel.getCreditsData(
                 movie.id
@@ -96,6 +106,9 @@ fun MovieScreen(
 
     when (cast) {
         null -> {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        }
+        emptyList<Cast>() -> {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
         else -> {
@@ -112,7 +125,7 @@ fun MovieScreen(
                         title = {},
                         navigationIcon = {
                             IconButton(
-                                onClick = { }
+                                onClick = { navController.popBackStack() }
                             ) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_back),
@@ -143,8 +156,6 @@ fun MovieScreen(
             }
         }
     }
-
-
 }
 
 @Composable
@@ -163,8 +174,16 @@ fun MoviePoster(
         lazyListState
     ) {
         item {
-            Image(
-                painter = painterResource(id = R.drawable.mock_poster),
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(
+                        stringResource(
+                            id = R.string.w_original_poster,
+                            movie.posterPath
+                        )
+                    )
+                    .crossfade(true)
+                    .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -196,19 +215,26 @@ fun MoviePoster(
                         text = movie.title,
                         maxLines = 2,
                         style = MaterialTheme.typography.titleMedium,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        modifier = Modifier.fillMaxWidth(0.8f)
                     )
                     Spacer(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
                     )
-                    IconButton(onClick = { }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_bookmark),
-                            contentDescription = null,
-                            modifier = Modifier.padding(start = 20.dp)
-                        )
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 40.dp)){
+                        IconButton(
+                            modifier = Modifier.align(Alignment.CenterEnd),
+                            onClick = { },
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_bookmark),
+                                contentDescription = null,
+                            )
+                        }
                     }
                 }
                 Row(
@@ -241,12 +267,13 @@ fun MoviePoster(
                 ) {
                     for (genre in movie.genresID) {
                         Text(
-                            text = genre.toString(),
+                            text = getMovieGenreByGenreID(genre).title,
                             modifier = Modifier
                                 .background(
                                     color = CategoryBackground,
-                                    shape = RoundedCornerShape(20)
-                                ),
+                                    shape = RoundedCornerShape(35)
+                                )
+                                .padding(vertical = 3.dp, horizontal = 5.dp),
                             style = MaterialTheme.typography.labelMedium.copy(
                                 color = CategoryTextColor
                             ),
@@ -287,7 +314,7 @@ fun MoviePoster(
                             fontSize = 12.sp
                         )
                         Text(
-                            text = movie.originalLanguage,
+                            text = movie.originalLanguage.capitalize(Locale.ROOT),
                             style = MaterialTheme.typography.titleMedium,
                             fontSize = 12.sp
                         )
@@ -374,16 +401,23 @@ fun CastMovie(
         verticalAlignment = Alignment.CenterVertically
     ) {
         items(castList.size) { index ->
-            Column(
-                modifier = Modifier.width(100.dp)
-            ) {
+            Column(Modifier.height(140.dp)) {
                 AsyncImage(
-                    model = castList[index].profilePath,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(
+                            stringResource(
+                                id = R.string.w_original_poster,
+                                castList[index].profilePath ?: Color.Black
+                            )
+                        )
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
                     modifier = Modifier
                         .height(100.dp)
                         .width(100.dp)
-                        .clip(RoundedCornerShape(15.dp))
+                        .clip(RoundedCornerShape(15.dp)),
+                    contentScale = ContentScale.Crop
                 )
                 Text(
                     text = castList[index].name,
@@ -391,9 +425,12 @@ fun CastMovie(
                         color = DarkBlueColor
                     ),
                     fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 5.dp)
+                    modifier = Modifier
+                        .padding(top = 5.dp)
+                        .width(100.dp),
                 )
             }
         }
     }
 }
+

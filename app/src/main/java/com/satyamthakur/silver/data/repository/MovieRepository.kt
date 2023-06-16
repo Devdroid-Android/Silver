@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
@@ -75,7 +76,7 @@ class MovieRepository(
                     message = errorParser(t)
                 )
             )
-        }.distinctUntilChanged().onStart {
+        }.onStart {
             emit(Resource.Loading)
         }.flowOn(ioDispatcher)
     }
@@ -96,7 +97,7 @@ class MovieRepository(
                     message = errorParser(t)
                 )
             )
-        }.distinctUntilChanged().onStart {
+        }.onStart {
             emit(Resource.Loading)
         }.flowOn(ioDispatcher)
     }
